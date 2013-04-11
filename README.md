@@ -4,14 +4,14 @@ xdtpl
 Простейший шаблонизатор на php
 
 использовать просто
-
+[code]
 <?php
 $tpl = new tpl(); 
 $tpl->assign('content','Привет Мир!!!');
 $tpl->assign('title','Демо сайт');// простое прсваивание
 $tpl->assign(array('news'=>'Новости','users'=>'Список польователей'));
 $tpl->parse('index');
-
+[/code]
 файл шаблонов
 
 <!DOCTYPE html>
