@@ -19,6 +19,7 @@ class tpl extends main {
 		}
 	}
 	private function exec($file) {
+		extract($this->vars);
 		eval('?>'.$this->safe( ROOT.$this->tpldir.$file.'.tpl') );
 	}
 	
@@ -39,7 +40,6 @@ class tpl extends main {
 	
 	public function show( $file,$vars = array() ) {
 		$this->assign($vars);
-		extract($this->vars);
 		$this->exec( $file );
 	}
 	function setContentType( $type ){
