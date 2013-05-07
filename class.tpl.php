@@ -1,4 +1,5 @@
 <?php
+defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
 class tpl extends main {
   private $vars = array();
 	private $tpldir = 'tpl/';
@@ -14,7 +15,7 @@ class tpl extends main {
 		if( file_exists($file) ){
 			return file_get_contents($file);
 		}else{ 
-			console( 'Файл '.$file.' не найден ',__FILE__,__CLASS__,__LINE__ );
+			//console( 'Файл '.$file.' не найден ',__FILE__,__CLASS__,__LINE__ );
 			return '';
 		}
 	}
