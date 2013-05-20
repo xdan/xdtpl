@@ -1,6 +1,6 @@
 <?php
 defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
-class tpl extends main {
+class tpl{
   private $vars = array();
 	private $tpldir = 'tpl/';
 	private $content_type = '';
