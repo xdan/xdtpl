@@ -1,4 +1,11 @@
 <?php
+/**
+ * tpl - templater
+ * 
+ * @author Chupurnov Valeriy http://xdan.ru
+ * @website http://xdan.ru
+ * @version 1.0.1
+ */
 defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
 class tpl{
   private $vars = array();
@@ -15,7 +22,7 @@ class tpl{
 		if( file_exists($file) ){
 			return file_get_contents($file);
 		}else{ 
-			//console( 'Файл '.$file.' не найден ',__FILE__,__CLASS__,__LINE__ );
+			//console( 'File '.$file.' not found ',__FILE__,__CLASS__,__LINE__ );
 			return '';
 		}
 	}
@@ -49,5 +56,58 @@ class tpl{
 	}
 	function getContentType( ){
 		return $this->content_type;
+	}
+	
+	/**
+	 * all2OneFile - parse all in-line script(and script file), and save all in one .js file for fast download page
+	 *
+	 * @param 	string 	$text html source
+	 * @param 	mixed 	$file_except array excluded files? witch no include in one file
+	 * @param 	string 	$full_pth path to dir where onefile be save
+	 * @param 	string 	$script_pth url path for onefile
+	 * @return 	string	Result source html, without all scripts, with one file  <script type="text/javascript" src="tmp/cache/f8b087b64b908a4c91d531c9921edb90.js"></script>
+	 */
+	function all2OneFile( $text,$file_except = array(),$full_pth = 'tmp/cache/',$script_pth = 'tmp/cache/' ){
+		if( preg_match_all( '#<script([^>]*)>(.*)</script>#Uis',$text,$slist ) ){
+			$buf='';
+			foreach($slist[1] as $i => $srcipt){
+				if( preg_match('#src=("|\')([^"\']+)("|\')#',$srcipt,$list) ){
+					$src = $list[2];
+					if( in_array( $src,$file_except ) ){
+						unset($slist[0][$i]);
+						unset($slist[1][$i]);
+						unset($slist[2][$i]);
+					}
+				}
+			}
+			$file_name = md5(implode('',$slist[0]));
+			if( !file_exists( $full_pth.$file_name.'.js' ) and file_exists($full_pth) and is_writable($full_pth) ){
+				foreach( $slist[1] as $i=>$srcipt ){
+					$filejs = ''; $src = '';
+					if( preg_match('#src=("|\')([^"\']+)("|\')#',$srcipt,$list) ){
+						$src = $list[2];
+						if( preg_match('#^http:\/\/#i',$src) ){
+							$filejs = "//$src\n".file_get_contents($src);
+						}else{
+							$file = preg_replace(array('#[\\\/]+#','#(\?.*)$#U'),array('/',''),ROOT.$src);
+							if( is_readable( $file ) != false ){
+								$filejs = "//$src\n".file_get_contents( $file );
+							}else $filejs ='';
+						}
+					}else{
+						$filejs = $script[2][$i];
+					}
+					$buf.=$filejs."\n";
+				}
+				if( $buf!='' ){
+					file_put_contents($full_pth.$file_name.'.js',$buf);
+				}
+			}
+			if( file_exists( $full_pth.$file_name.'.js' ) ){
+				$text = str_replace($slist[0][count($slist[0])-1],'<script type="text/javascript" src="'.$script_pth.$file_name.'.js"></script>',$text);
+				$text = str_replace($slist[0],'',$text);
+			}
+		}
+		return $text;
 	}
 }
