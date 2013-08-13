@@ -72,13 +72,10 @@ class tpl{
 		if( preg_match_all( '#<script([^>]*)>(.*)</script>#Uis',$text,$slist ) ){
 			$buf='';
 			foreach($slist[1] as $i => $srcipt){
-				if( preg_match('#src=("|\')([^"\']+)("|\')#',$srcipt,$list) ){
-					$src = $list[2];
-					if( in_array( $src,$file_except ) or preg_match('#noonefile#',$slist[0][$i]) ){
-						unset($slist[0][$i]);
-						unset($slist[1][$i]);
-						unset($slist[2][$i]);
-					}
+				if( ( preg_match('#src=("|\')([^"\']+)("|\')#',$srcipt,$list) and in_array( $src = $list[2],$file_except ) ) or preg_match('#noonefile#',$slist[0][$i]) ){
+					unset($slist[0][$i]);
+					unset($slist[1][$i]);
+					unset($slist[2][$i]);
 				}
 			}
 			$file_name = md5(implode('',$slist[0]));
