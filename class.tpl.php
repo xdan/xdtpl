@@ -66,6 +66,7 @@ class tpl{
 	 * @param 	string 	$full_pth path to dir where onefile be save
 	 * @param 	string 	$script_pth url path for onefile
 	 * @return 	string	Result source html, without all scripts, with one file  <script type="text/javascript" src="tmp/cache/f8b087b64b908a4c91d531c9921edb90.js"></script>
+	 * @example	<script noonefile></script> no include in one file
 	 */
 	function all2OneFile( $text,$file_except = array(),$full_pth = 'tmp/cache/',$script_pth = 'tmp/cache/' ){
 		if( preg_match_all( '#<script([^>]*)>(.*)</script>#Uis',$text,$slist ) ){
@@ -73,7 +74,7 @@ class tpl{
 			foreach($slist[1] as $i => $srcipt){
 				if( preg_match('#src=("|\')([^"\']+)("|\')#',$srcipt,$list) ){
 					$src = $list[2];
-					if( in_array( $src,$file_except ) ){
+					if( in_array( $src,$file_except ) or preg_match('#noonefile#',$slist[0][$i]) ){
 						unset($slist[0][$i]);
 						unset($slist[1][$i]);
 						unset($slist[2][$i]);
