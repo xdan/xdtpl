@@ -4,7 +4,7 @@
  * 
  * @author Chupurnov Valeriy http://xdan.ru
  * @website http://xdan.ru
- * @version 1.0.1
+ * @version 1.0.2
  */
 defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
 class tpl{
@@ -95,7 +95,7 @@ class tpl{
 							}else $filejs ='';
 						}
 					}else{
-						$filejs = $script[2][$i];
+						$filejs = $slist[2][$i];
 					}
 					$buf.=$filejs."\n";
 				}
