@@ -34,7 +34,7 @@ class tpl{
 	public function assign( $var, $val='' ) {
 		if( is_scalar($var) )
 			$this->vars[$var] = $val;
-		else 
+		else if( is_array($var) )
 			$this->vars = array_merge($this->vars,$var);
 	}
 	public function parse( $file,$vars = array() ) {
