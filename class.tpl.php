@@ -4,10 +4,10 @@
  * 
  * @author Chupurnov Valeriy http://xdan.ru
  * @website http://xdan.ru
- * @version 1.0.2
+ * @version 1.0.3
  */
 defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
-class tpl{
+class tpl extends main{
   private $vars = array();
 	private $tpldir = 'tpl/';
 	private $content_type = '';
@@ -26,9 +26,9 @@ class tpl{
 			return '';
 		}
 	}
-	private function exec($file) {
+	public function exec( $code ) {
 		extract($this->vars);
-		eval('?>'.$this->safe( ROOT.$this->tpldir.$file.'.tpl') );
+		eval('?>'.$code );
 	}
 	
 	public function assign( $var, $val='' ) {
@@ -48,7 +48,7 @@ class tpl{
 	
 	public function show( $file,$vars = array() ) {
 		$this->assign($vars);
-		$this->exec( $file );
+		$this->exec( $this->safe( ROOT.$this->tpldir.$file.'.tpl') );
 	}
 	function setContentType( $type ){
 		if( in_array(strtolower($type),array('page','json','html')) )
