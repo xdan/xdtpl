@@ -4,13 +4,26 @@
  * 
  * @author Chupurnov Valeriy http://xdan.ru
  * @website http://xdan.ru
- * @version 1.0.3
+ * @version 1.0.4
  */
 defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
 class tpl extends main{
-  private $vars = array();
+  	private $vars = array();
 	private $tpldir = 'tpl/';
 	private $content_type = '';
+	private $skin_path 	= false;
+	/**
+	 * setSkin - set skin path
+	 *
+	 * @param $name String - the path to the folder with alternate main template file
+	 */
+	function setSkin( $name ){
+		$skin_path = ROOT.$this->tpldir.'skins/'.$name;
+		if( file_exists($skin_path) and is_dir($skin_path) ){
+			$this->skin_path = realpath($skin_path).'/';
+		}else $this->skin_path = false;
+	}
+	
 	public function __get( $name ){
 		if( isset($this->vars[$name]) )
 			return $this->vars[$name];
@@ -19,10 +32,14 @@ class tpl extends main{
 		$this->vars[$name] = $value;
 	}
 	private function safe( $file ){
-		if( file_exists($file) ){
-			return file_get_contents($file);
+		$tpl_file = ROOT.$this->tpldir.$file.'.tpl';
+		$alter_file = $this->skin_path?$this->skin_path.$file.'.tpl':false;
+		if( $alter_file and file_exists($alter_file) ){
+			return file_get_contents($alter_file);
+		}else if( file_exists($tpl_file) ){
+			return file_get_contents($tpl_file);
 		}else{ 
-			//console( 'File '.$file.' not found ',__FILE__,__CLASS__,__LINE__ );
+			//console( 'Файл '.$file.' не найден ',__FILE__,__CLASS__,__LINE__ );
 			return '';
 		}
 	}
@@ -43,12 +60,12 @@ class tpl extends main{
 		return ob_get_clean();
 	}
 	public function read( $file ){
-		return $this->safe( ROOT.$this->tpldir.$file.'.tpl' );
+		return $this->safe($file);
 	}
 	
 	public function show( $file,$vars = array() ) {
 		$this->assign($vars);
-		$this->exec( $this->safe( ROOT.$this->tpldir.$file.'.tpl') );
+		$this->exec( $this->safe($file) );
 	}
 	function setContentType( $type ){
 		if( in_array(strtolower($type),array('page','json','html')) )
