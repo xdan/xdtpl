@@ -4,7 +4,7 @@
  * 
  * @author Chupurnov Valeriy http://xdan.ru
  * @website http://xdan.ru
- * @version 1.0.4
+ * @version 1.0.5
  */
 defined('ROOT') or define('ROOT',dirname(__FILE__).'/'); // if not defined
 class tpl extends main{
@@ -124,5 +124,25 @@ class tpl extends main{
 			}
 		}
 		return $text;
+	}
+       /**
+        * Generate select tag
+        * 
+        * @param $list array [value=>text,...]
+        * 
+        * @return html
+	*/
+	function dropDownlist( $name,$value=false,$list = array(),$htmlOptions = array() ){
+		$tag = '<select ';
+		$htmlOptions['name'] = $name;
+		$htmlOptions['id'] = preg_replace('#[^0-9a-zA-Z_]#','_',$name);
+		foreach($htmlOptions as $key=>$val){
+			$tag.=' '.$key.'="'.$val.'" ';
+		}
+		$tag.='>';
+		foreach($list as $key=>$val){
+			$tag.='<option '.($value==$key?'selected':'').' value="'.$key.'">'.$val.'</option>';
+		}
+		return $tag;
 	}
 }
