@@ -141,7 +141,7 @@ class tpl extends main{
 		}
 		$tag.='>';
 		foreach($list as $key=>$val){
-			$tag.='<option '.($value==$key?'selected':'').' value="'.$key.'">'.$val.'</option>';
+			$tag.='<option '.(($value==$key or (is_array($value) and in_array($key,$value)))?'selected':'').' value="'.$key.'">'.$val.'</option>';
 		}
 		return $tag;
 	}
