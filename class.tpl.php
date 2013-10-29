@@ -101,8 +101,10 @@ class tpl extends main{
 					$filejs = ''; $src = '';
 					if( preg_match('#src=("|\')([^"\']+)("|\')#',$srcipt,$list) ){
 						$src = $list[2];
-						if( preg_match('#^http:\/\/#i',$src) ){
+						if( preg_match('#^http:?\/\/#i',$src) ){
 							$filejs = "//$src\n".file_get_contents($src);
+						}else if( preg_match('#^\/\/#i',$src) ){
+							$filejs = "//$src\n".file_get_contents('http:'.$src);
 						}else{
 							$file = preg_replace(array('#[\\\/]+#','#(\?.*)$#U'),array('/',''),ROOT.$src);
 							if( is_readable( $file ) != false ){
